@@ -1,19 +1,23 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useActionState } from "react";
+import { login, signup } from "./actions";
+
+const initialState = null;
 
 export default function AuthPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [loginState, loginAction, loginPending] = useActionState(login, initialState);
+  const [signupState, signupAction, signupPending] = useActionState(signup, initialState);
 
-  function onLogin() {
-    console.log("login", { email, password });
-  }
+  const message =
+    (loginState && "error" in loginState && loginState.error) ||
+    (signupState && "error" in signupState && signupState.error) ||
+    (signupState && "success" in signupState && signupState.success) ||
+    null;
 
-  function onSignup() {
-    console.log("signup", { email, password });
-  }
+  const messageTone =
+    signupState && "success" in signupState ? "text-emerald-300" : "text-red-300";
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-gradient-to-b from-[#0b1026] via-[#1a2554] to-[#0b1026] text-white">
@@ -32,24 +36,17 @@ export default function AuthPage() {
         </h1>
         <p className="mt-2 text-sm text-white/70">계정으로 들어와요</p>
 
-        <form
-          className="mt-10 w-full space-y-4"
-          onSubmit={(e) => {
-            e.preventDefault();
-            onLogin();
-          }}
-        >
+        <form className="mt-10 w-full space-y-4">
           <div className="space-y-1">
             <label htmlFor="email" className="block text-xs text-white/70">
               이메일
             </label>
             <input
               id="email"
+              name="email"
               type="email"
               autoComplete="email"
               required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
               className="w-full rounded-md border border-white/20 bg-white/5 px-4 py-3 text-sm placeholder:text-white/40 focus:border-white/50 focus:outline-none"
               placeholder="you@example.com"
             />
@@ -61,29 +58,36 @@ export default function AuthPage() {
             </label>
             <input
               id="password"
+              name="password"
               type="password"
               autoComplete="current-password"
               required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              minLength={6}
               className="w-full rounded-md border border-white/20 bg-white/5 px-4 py-3 text-sm placeholder:text-white/40 focus:border-white/50 focus:outline-none"
-              placeholder="••••••••"
+              placeholder="6자 이상"
             />
           </div>
+
+          {message && (
+            <p className={`text-xs ${messageTone}`}>{message}</p>
+          )}
 
           <div className="grid grid-cols-2 gap-3 pt-4">
             <button
               type="submit"
-              className="font-[family-name:var(--font-dunggeunmo)] rounded-md bg-white py-3 text-base text-[#0b1026] transition hover:-translate-y-0.5 hover:shadow-lg"
+              formAction={loginAction}
+              disabled={loginPending || signupPending}
+              className="font-[family-name:var(--font-dunggeunmo)] rounded-md bg-white py-3 text-base text-[#0b1026] transition hover:-translate-y-0.5 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-50"
             >
-              로그인
+              {loginPending ? "..." : "로그인"}
             </button>
             <button
-              type="button"
-              onClick={onSignup}
-              className="font-[family-name:var(--font-dunggeunmo)] rounded-md border border-white/40 bg-transparent py-3 text-base text-white transition hover:border-white hover:bg-white/10"
+              type="submit"
+              formAction={signupAction}
+              disabled={loginPending || signupPending}
+              className="font-[family-name:var(--font-dunggeunmo)] rounded-md border border-white/40 bg-transparent py-3 text-base text-white transition hover:border-white hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-50"
             >
-              회원가입
+              {signupPending ? "..." : "회원가입"}
             </button>
           </div>
         </form>
