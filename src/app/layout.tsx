@@ -1,20 +1,16 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+const dungGeunMo = localFont({
+  src: "./fonts/DungGeunMo.otf",
+  variable: "--font-dunggeunmo",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "axhub × Next.js",
-  description: "조코딩 AX 파트너스 axhub 위에서 굴러가는 Next.js 바이브코딩 템플릿",
+  title: "walk-to-universe",
+  description: "걸어서 우주로",
 };
 
 export default function RootLayout({
@@ -25,7 +21,7 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${dungGeunMo.variable} antialiased`}
       >
         {children}
       </body>
