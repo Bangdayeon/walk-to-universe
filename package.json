@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "description": "axhub 위에서 바로 굴러가는 Next.js 16 + React 19 + Tailwind 템플릿",
+  "packageManager": "pnpm@9.15.5",
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
